@@ -12,7 +12,7 @@ int* sticker[2];
 int* dp[2];
 
 int func(int x, int y) {
-	if (y > N) return 0;
+	if (y >= N) return 0;
 	if (dp[x][y] != -1) return dp[x][y];
 
 	int n = sticker[x][y];
