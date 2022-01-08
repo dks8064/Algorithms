@@ -1,0 +1,55 @@
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Main
+{
+	static ArrayList<Integer>[] tree;
+	static int sub[];
+	static boolean visited[];
+	static int N, R, Q;
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		
+		Scanner sc = new Scanner(System.in);
+		N = sc.nextInt();
+		R = sc.nextInt();
+		Q = sc.nextInt();
+		
+		sub = new int[N+1];
+		visited = new boolean[N+1];
+		tree = new ArrayList[N+1];
+		for(int i=0; i<N+1; i++) {
+			tree[i] = new ArrayList<>();
+		}
+		
+		for(int n=0; n<N-1; n++) {
+			int u = sc.nextInt();
+			int v = sc.nextInt();
+			tree[u].add(v);
+			tree[v].add(u);
+		}
+		visited[R] = true;
+		countSubTree(R);
+		for(int q=0; q<Q; q++) {
+			int node = sc.nextInt();
+			System.out.println(sub[node] + 1);
+		}
+	}
+	
+	public static int countSubTree(int node) {
+		boolean check = false;
+		int sum = 0;
+		for(int n: tree[node]) {
+			if(!visited[n]) {
+				visited[n] = true;
+				sum += countSubTree(n);
+				check = true;
+			}
+		}
+		if(!check) return 1;
+		sub[node] = sum;
+		return sub[node] + 1;
+	}
+}
