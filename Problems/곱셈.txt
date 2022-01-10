@@ -1,0 +1,28 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Main
+{
+	static int c;
+	
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		int a = sc.nextInt();
+		int b = sc.nextInt();
+		c = sc.nextInt();
+		
+		System.out.println(pow(a, b));
+		
+	}
+	
+	public static long pow(long a, long b) {
+		if(b == 1) return a%c;
+		long temp = pow(a, b/2);
+		if(b%2 == 1) return ((temp*temp%c)*a)%c;
+		return (temp*temp)%c;
+	}
+	
+	
+}

@@ -1,0 +1,113 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Pair {
+	public int x, y;
+	Pair(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+class Main
+{
+	static int R, C, N;
+	static char[][] cave;
+	static int[] dir = {-1, 0, 1, 0};
+	
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		Scanner sc = new Scanner(System.in);
+		R = sc.nextInt();
+		C = sc.nextInt();
+		cave = new char[R][C];
+		for(int i=0; i<R; i++) cave[i] = sc.next().toCharArray();
+		N = sc.nextInt();
+		for(int i=0; i<N; i++) throwStick(R-sc.nextInt(), i%2);
+		
+		print();
+	}
+	
+	public static void print() {
+		for(int i=0; i<R; i++) {
+			for(int j=0; j<C; j++) {
+				System.out.print(cave[i][j]);
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void throwStick(int h, int direction) {
+		for(int i=0; i<C; i++) {
+			int j = i;
+			if(direction == 1) j = C-i-1;
+			if(cave[h][j] == 'x') {
+				cave[h][j] = '.';
+				for(int d=0; d<4; d++) {
+					int dx = h+dir[d], dy = j+dir[3-d];
+					if(dx < 0 || dy < 0 || dx >= R || dy >= C) continue;
+					if(cave[dx][dy] == 'x') {
+						if(isBlow(dx, dy)) falling();
+						reset();
+					}
+				}
+				return;
+			}
+		}
+	}
+	
+	public static boolean isBlow(int x, int y) {
+		if(x == R-1) return false;
+		
+		Queue<Pair> q = new LinkedList<>();
+		q.add(new Pair(x, y));
+		while(!q.isEmpty()) {
+			Pair p = q.poll();
+			
+			cave[p.x][p.y] = 'y';
+			if(p.x == R-1) return false;
+			for(int d=0; d<4; d++) {
+				int dx = p.x+dir[d], dy = p.y+dir[3-d];
+				if(dx < 0 || dy < 0 || dx >= R || dy >= C) continue;
+				if(cave[dx][dy] != 'x') continue;
+				cave[dx][dy] = 'y';
+				q.add(new Pair(dx, dy));
+			}
+		}
+		return true;
+	}
+	
+	public static void reset() {
+		for(int i=0; i<R; i++) {
+			for(int j=0; j<C; j++) {
+				if(cave[i][j] == 'y') cave[i][j] = 'x';
+			}
+		}
+	}
+	
+	public static void falling() {
+		do {
+			for(int i=R-2; i>=0; i--) {
+				for(int j=0; j<C; j++) {
+					if(cave[i][j] == 'y') {
+						cave[i][j] = '.';
+						cave[i+1][j] = 'y';
+					}
+				}
+			}
+		} while(!isStop());
+	}
+	
+	public static boolean isStop() {
+		for(int i=0; i<R; i++) {
+			for(int j=0; j<C; j++) {
+				if(i == R-1) {
+					if(cave[i][j] == 'y') return true;	
+				} else if(cave[i][j] == 'y' && cave[i+1][j] == 'x') return true;
+			}
+		}
+		
+		return false;
+	}
+}
