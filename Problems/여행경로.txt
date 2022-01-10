@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+    String[] answer = {};
+
+    public String[] solution(String[][] tickets) {
+
+        Map<String, ArrayList<String>> m = new HashMap<>();
+        for(int i=0; i<tickets.length; i++) {
+            ArrayList<String> list = m.getOrDefault(tickets[i][0], new ArrayList<String>());
+            list.add(tickets[i][1]);
+            Collections.sort(list);
+            m.put(tickets[i][0], list);
+        }
+
+        String[] place = new String[tickets.length+1];
+        place[0] = "ICN";
+        dfs(m, place, 0);
+        return answer;
+    }
+
+    public void dfs(Map<String, ArrayList<String>> m, String[] place, int idx) {
+        if(place.length-1 == idx) {
+            for(ArrayList<String> list: m.values()) if(list.size() > 0) return;
+            answer = place;
+            return;
+        }
+
+        ArrayList<String> list = m.get(place[idx]);
+        if(list == null) return;
+        for(int i=0; i<list.size(); i++) {
+            place[idx+1] = list.get(i);
+            list.remove(i);
+            dfs(m, place, idx+1);
+            if(answer.length > 0) return;
+            list.add(i, place[idx+1]);
+        }
+    }
+}
